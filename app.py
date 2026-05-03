@@ -13,6 +13,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Создаём все необходимые папки
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs('static/images', exist_ok=True)
+    os.makedirs('instance', exist_ok=True)
+
     # Инициализация базы данных
     db.init_app(app)
 
@@ -26,9 +31,6 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Создаём папку для загрузок, если её нет
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
     # Регистрируем Blueprint'ы
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(cats_bp)
@@ -39,7 +41,10 @@ def create_app():
 
 app = create_app()
 
+# !!! ВАЖНО: СОЗДАЁМ ТАБЛИЦЫ ПРИ ЗАПУСКЕ !!!
+with app.app_context():
+    db.create_all()
+    print("✅ База данных и таблицы созданы!")
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Создаём все таблицы в БД
     app.run(debug=True, host='0.0.0.0', port=5000)
