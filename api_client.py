@@ -5,9 +5,6 @@ api_bp = Blueprint('api', __name__)
 
 
 def get_random_cat_image():
-    """
-    Получает случайное фото кота из API Cataas.com
-    """
     try:
         response = requests.get('https://cataas.com/cat?json=true', timeout=10)
 
@@ -25,6 +22,5 @@ def get_random_cat_image():
 
 @api_bp.route('/random-cat')
 def random_cat():
-    """Страница со случайным котом из API"""
     cat_image_url = get_random_cat_image()
     return render_template('cat_api.html', cat_image_url=cat_image_url)
