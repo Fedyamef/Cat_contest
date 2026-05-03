@@ -13,12 +13,16 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Создаём папки (только для SQLite, PostgreSQL они не нужны)
+    if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+        os.makedirs('instance', exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     os.makedirs('static/images', exist_ok=True)
-    os.makedirs('instance', exist_ok=True)
 
+    # Инициализация базы данных
     db.init_app(app)
 
+    # Настройка Flask-Login
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -28,6 +32,7 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+    # Регистрируем Blueprint'ы
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(cats_bp)
     app.register_blueprint(api_bp)
@@ -37,7 +42,7 @@ def create_app():
 
 app = create_app()
 
-
+# Создаём таблицы
 with app.app_context():
     db.create_all()
     print("✅ База данных и таблицы созданы!")
