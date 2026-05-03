@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Мои фото{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">
+        <i class="bi bi-images"></i> Мои загруженные котики
+    </h1>
+
+    {% if photos %}
+        <div class="row">
+            {% for photo in photos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card cat-card shadow-sm">
+                        <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+                             class="card-img-top cat-img"
+                             alt="{{ photo.cat_name }}"
+                             style="height: 250px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ photo.cat_name }}</h5>
+                            <p class="card-text text-muted small">
+                                <i class="bi bi-calendar"></i> {{ photo.upload_date.strftime('%d.%m.%Y') }}<br>
+                                <i class="bi bi-heart-fill text-danger"></i> {{ photo.votes_count }} голосов
+                            </p>
+                            {% if photo.description %}
+                                <p class="card-text small">{{ photo.description[:100] }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <button type="button" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#deleteModal{{ photo.id }}">
+                                <i class="bi bi-trash"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Модальное окно подтверждения удаления -->
+                <div class="modal fade" id="deleteModal{{ photo.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Подтверждение</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Удалить фото кота <strong>{{ photo.cat_name }}</strong>?</p>
+                                <p class="text-danger small">Это действие нельзя отменить.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <form method="POST" action="{{ url_for('cats.delete_photo', photo_id=photo.id) }}">
+                                    <button type="submit" class="btn btn-danger">Да, удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('cats.upload') }}" class="btn btn-primary">
+                <i class="bi bi-cloud-upload"></i> Загрузить ещё кота
+            </a>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> Вы ещё не загрузили ни одного котика.<br><br>
+            <a href="{{ url_for('cats.upload') }}" class="btn btn-primary">
+                <i class="bi bi-cloud-upload"></i> Загрузить первого кота
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

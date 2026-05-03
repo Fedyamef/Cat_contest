@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Случайный кот из API{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">
+        <i class="bi bi-globe"></i> Случайный котик с нашей планеты
+    </h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-cpu"></i> Cataas.com</h4>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ cat_image_url }}"
+                         alt="Random cat from API"
+                         class="img-fluid rounded mb-3"
+                         style="max-height: 400px; object-fit: contain;"
+                         onerror="this.onerror=null; this.src='https://cataas.com/cat';">
+
+                    <div class="mt-3">
+                        <p class="text-muted">
+                            <i class="bi bi-info-circle"></i> Этот котик пришёл к нам по REST API от Cataas
+                        </p>
+                        <a href="{{ url_for('api.random_cat') }}" class="btn btn-primary">
+                            <i class="bi bi-shuffle"></i> Получить другого кота
+                        </a>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{{ url_for('cats.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Вернуться в галерею
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

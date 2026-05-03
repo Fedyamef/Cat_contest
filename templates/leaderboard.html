@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Топ котов{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">🏆 Топ-10 котов по голосам 🏆</h1>
+
+    {% if top_photos %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="list-group">
+                    {% for photo in top_photos %}
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    {% if loop.index == 1 %}
+                                        <span class="badge bg-warning text-dark fs-3">👑 {{ loop.index }}</span>
+                                    {% elif loop.index == 2 %}
+                                        <span class="badge bg-secondary text-white fs-3">🥈 {{ loop.index }}</span>
+                                    {% elif loop.index == 3 %}
+                                        <span class="badge bg-danger text-white fs-3">🥉 {{ loop.index }}</span>
+                                    {% else %}
+                                        <span class="badge bg-primary fs-5">{{ loop.index }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-auto">
+                                    <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+                                </div>
+                                <div class="col">
+                                    <h5 class="mb-0">{{ photo.cat_name }}</h5>
+                                    <small class="text-muted">Автор: {{ photo.owner.username }} | ❤️ {{ photo.votes_count }} голосов</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Пока нет голосов</div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('cats.index') }}" class="btn btn-primary">Вернуться в галерею</a>
+    </div>
+</div>
+{% endblock %}
